@@ -1,4 +1,4 @@
-import { Client4 } from '@mattermost/client';
+import { Client4, DEFAULT_LIMIT_AFTER } from '@mattermost/client';
 import { Channel } from '@mattermost/types/channels';
 import { Post, PostList } from '@mattermost/types/posts';
 import { Reaction } from '@mattermost/types/reactions';
@@ -138,7 +138,9 @@ export class MattermostClient {
    */
   async getPostsUnread({ channelId }: { channelId: string }) {
     const me = await this.client.getMe();
-    return this.convertPostList(await this.client.getPostsUnread(channelId, me.id, 100, 100));
+    return this.convertPostList(
+      await this.client.getPostsUnread(channelId, me.id, DEFAULT_LIMIT_AFTER, 0, true),
+    );
   }
 
   /**
@@ -232,7 +234,7 @@ export class MattermostClient {
       throw new Error('Team ID not set');
     }
     const channels = await this.client.getMyChannels(this.teamId);
-    return channels.map(this.convertChannel);
+    return channels.filter(channel => ['O', 'P'].includes(channel.type)).map(this.convertChannel);
   }
 
   private convertPost(post: Post) {
