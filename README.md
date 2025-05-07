@@ -38,7 +38,7 @@ To run this tool, you need to set the following environment variables:
 
 The MCP server provides the following tools:
 
-- User management: `get_users`, `search_users`
-- Channel management: `search_channels`, `get_channels`
-- Post management: `search_posts`, `get_posts`, `create_post`, `get_posts_thread`, `pin_post`, `unpin_post`, `get_pinned_posts`
-- Reaction management: `add_reaction`, `remove_reaction`, `get_reactions`
+- User management: `mattermost_get_users`, `mattermost_search_users`
+- Channel management: `mattermost_search_channels`, `mattermost_get_channels`
+- Post management: `mattermost_search_posts`, `mattermost_get_posts`, `mattermost_create_post`, `mattermost_get_posts_thread`, `mattermost_pin_post`, `mattermost_unpin_post`, `mattermost_get_pinned_posts`
+- Reaction management: `mattermost_add_reaction`, `mattermost_remove_reaction`, `mattermost_get_reactions`

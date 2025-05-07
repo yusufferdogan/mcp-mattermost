@@ -26,7 +26,7 @@ describe('HandlerReaction', () => {
 
   it('should add a reaction to a post', async () => {
     const tools = handler.getMcpTools();
-    const addReactionTool = tools.find(tool => tool.name === 'add_reaction');
+    const addReactionTool = tools.find(tool => tool.name === 'mattermost_add_reaction');
     if (addReactionTool) {
       const result = await addReactionTool.handler({
         postId: 'test-post-id',
@@ -36,13 +36,13 @@ describe('HandlerReaction', () => {
       expect(result.isError).toBe(false);
       expect(result.content).toBeInstanceOf(Array);
     } else {
-      fail('add_reaction tool not found');
+      fail('mattermost_add_reaction tool not found');
     }
   });
 
   it('should remove a reaction from a post', async () => {
     const tools = handler.getMcpTools();
-    const removeReactionTool = tools.find(tool => tool.name === 'remove_reaction');
+    const removeReactionTool = tools.find(tool => tool.name === 'mattermost_remove_reaction');
     if (removeReactionTool) {
       const result = await removeReactionTool.handler({
         postId: 'test-post-id',
@@ -52,20 +52,20 @@ describe('HandlerReaction', () => {
       expect(result.isError).toBe(false);
       expect(result.content).toBeInstanceOf(Array);
     } else {
-      fail('remove_reaction tool not found');
+      fail('mattermost_remove_reaction tool not found');
     }
   });
 
   it('should get reactions for a post', async () => {
     const tools = handler.getMcpTools();
-    const getReactionsTool = tools.find(tool => tool.name === 'get_reactions');
+    const getReactionsTool = tools.find(tool => tool.name === 'mattermost_get_reactions');
     if (getReactionsTool) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const result = await getReactionsTool.handler({ postId: 'test-post-id' } as any);
       expect(result.isError).toBe(false);
       expect(result.content).toBeInstanceOf(Array);
     } else {
-      fail('get_reactions tool not found');
+      fail('mattermost_get_reactions tool not found');
     }
   });
 });

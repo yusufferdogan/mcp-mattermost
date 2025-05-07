@@ -33,7 +33,7 @@ export class HandlerReaction extends AbstractHandler {
   getMcpTools() {
     return [
       this.createMcpTool({
-        name: 'add_reaction',
+        name: 'mattermost_add_reaction',
         description: 'Add a reaction (emoji) to a post',
         parameter: {
           postId: z.string().describe('Post ID to add the reaction to'),
@@ -46,7 +46,7 @@ export class HandlerReaction extends AbstractHandler {
         },
       }),
       this.createMcpTool({
-        name: 'remove_reaction',
+        name: 'mattermost_remove_reaction',
         description: 'Remove a reaction (emoji) from a post',
         parameter: {
           postId: z.string().describe('Post ID to remove the reaction from'),
@@ -62,7 +62,7 @@ export class HandlerReaction extends AbstractHandler {
         },
       }),
       this.createMcpTool({
-        name: 'get_reactions',
+        name: 'mattermost_get_reactions',
         description: 'Get all reactions for a post',
         parameter: { postId: z.string().describe('Post ID to get reactions for') },
         handler: async ({ postId }: { postId: string }) => {

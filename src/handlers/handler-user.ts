@@ -32,7 +32,7 @@ export class HandlerUser extends AbstractHandler {
   getMcpTools() {
     return [
       this.createMcpTool({
-        name: 'get_users',
+        name: 'mattermost_get_users',
         description: 'Get users by username or user ID',
         parameter: {
           username: z
@@ -57,7 +57,7 @@ export class HandlerUser extends AbstractHandler {
         },
       }),
       this.createMcpTool({
-        name: 'search_users',
+        name: 'mattermost_search_users',
         description: 'Search users by term',
         parameter: { term: z.string().describe('Search term') },
         handler: async ({ term }: { term: string }) => {

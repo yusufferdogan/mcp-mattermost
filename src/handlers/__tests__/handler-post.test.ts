@@ -29,46 +29,46 @@ describe('HandlerPost', () => {
 
   it('should search posts', async () => {
     const tools = handler.getMcpTools();
-    const searchPostsTool = tools.find(tool => tool.name === 'search_posts');
+    const searchPostsTool = tools.find(tool => tool.name === 'mattermost_search_posts');
     if (searchPostsTool) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const result = await searchPostsTool.handler({ term: 'test' } as any);
       expect(result.isError).toBe(false);
       expect(result.content).toBeInstanceOf(Array);
     } else {
-      fail('search_posts tool not found');
+      fail('mattermost_search_posts tool not found');
     }
   });
 
   it('should get posts by post ID', async () => {
     const tools = handler.getMcpTools();
-    const getPostsTool = tools.find(tool => tool.name === 'get_posts');
+    const getPostsTool = tools.find(tool => tool.name === 'mattermost_get_posts');
     if (getPostsTool) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const result = await getPostsTool.handler({ postId: 'test-post-id' } as any);
       expect(result.isError).toBe(false);
       expect(result.content).toBeInstanceOf(Array);
     } else {
-      fail('get_posts tool not found');
+      fail('mattermost_get_posts tool not found');
     }
   });
 
   it('should get unread posts in a channel', async () => {
     const tools = handler.getMcpTools();
-    const getPostsUnreadTool = tools.find(tool => tool.name === 'get_posts_unread');
+    const getPostsUnreadTool = tools.find(tool => tool.name === 'mattermost_get_posts_unread');
     if (getPostsUnreadTool) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const result = await getPostsUnreadTool.handler({ channelId: 'test-channel-id' } as any);
       expect(result.isError).toBe(false);
       expect(result.content).toBeInstanceOf(Array);
     } else {
-      fail('get_posts_unread tool not found');
+      fail('mattermost_get_posts_unread tool not found');
     }
   });
 
   it('should create a new post', async () => {
     const tools = handler.getMcpTools();
-    const createPostTool = tools.find(tool => tool.name === 'create_post');
+    const createPostTool = tools.find(tool => tool.name === 'mattermost_create_post');
     if (createPostTool) {
       const result = await createPostTool.handler({
         channelId: 'test-channel-id',
@@ -78,59 +78,59 @@ describe('HandlerPost', () => {
       expect(result.isError).toBe(false);
       expect(result.content).toBeInstanceOf(Array);
     } else {
-      fail('create_post tool not found');
+      fail('mattermost_create_post tool not found');
     }
   });
 
   it('should get posts in a thread', async () => {
     const tools = handler.getMcpTools();
-    const getPostsThreadTool = tools.find(tool => tool.name === 'get_posts_thread');
+    const getPostsThreadTool = tools.find(tool => tool.name === 'mattermost_get_posts_thread');
     if (getPostsThreadTool) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const result = await getPostsThreadTool.handler({ rootId: 'test-post-id' } as any);
       expect(result.isError).toBe(false);
       expect(result.content).toBeInstanceOf(Array);
     } else {
-      fail('get_posts_thread tool not found');
+      fail('mattermost_get_posts_thread tool not found');
     }
   });
 
   it('should pin a post', async () => {
     const tools = handler.getMcpTools();
-    const pinPostTool = tools.find(tool => tool.name === 'pin_post');
+    const pinPostTool = tools.find(tool => tool.name === 'mattermost_pin_post');
     if (pinPostTool) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const result = await pinPostTool.handler({ postId: 'test-post-id' } as any);
       expect(result.isError).toBe(false);
       expect(result.content).toBeInstanceOf(Array);
     } else {
-      fail('pin_post tool not found');
+      fail('mattermost_pin_post tool not found');
     }
   });
 
   it('should unpin a post', async () => {
     const tools = handler.getMcpTools();
-    const unpinPostTool = tools.find(tool => tool.name === 'unpin_post');
+    const unpinPostTool = tools.find(tool => tool.name === 'mattermost_unpin_post');
     if (unpinPostTool) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const result = await unpinPostTool.handler({ postId: 'test-post-id' } as any);
       expect(result.isError).toBe(false);
       expect(result.content).toBeInstanceOf(Array);
     } else {
-      fail('unpin_post tool not found');
+      fail('mattermost_unpin_post tool not found');
     }
   });
 
   it('should get pinned posts in a channel', async () => {
     const tools = handler.getMcpTools();
-    const getPinnedPostsTool = tools.find(tool => tool.name === 'get_pinned_posts');
+    const getPinnedPostsTool = tools.find(tool => tool.name === 'mattermost_get_pinned_posts');
     if (getPinnedPostsTool) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const result = await getPinnedPostsTool.handler({ channelId: 'test-channel-id' } as any);
       expect(result.isError).toBe(false);
       expect(result.content).toBeInstanceOf(Array);
     } else {
-      fail('get_pinned_posts tool not found');
+      fail('mattermost_get_pinned_posts tool not found');
     }
   });
 });
