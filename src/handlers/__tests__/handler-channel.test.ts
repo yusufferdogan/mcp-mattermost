@@ -6,6 +6,7 @@ jest.mock('../../client/mattermost-client', () => ({
     searchChannels: jest.fn().mockResolvedValue([{ id: 'test-channel-id', name: 'test-channel' }]),
     getChannel: jest.fn().mockResolvedValue({ id: 'test-channel-id', name: 'test-channel' }),
     getChannelByName: jest.fn().mockResolvedValue({ id: 'test-channel-id', name: 'test-channel' }),
+    getMyChannels: jest.fn().mockResolvedValue([{ id: 'test-channel-id', name: 'test-channel' }]),
   })),
 }));
 
@@ -19,7 +20,7 @@ describe('HandlerChannel', () => {
 
   it('should get MCP tools', () => {
     const tools = handler.getMcpTools();
-    expect(tools).toHaveLength(2);
+    expect(tools).toHaveLength(3);
   });
 
   it('should search channels', async () => {
@@ -58,6 +59,19 @@ describe('HandlerChannel', () => {
       expect(result.content).toBeInstanceOf(Array);
     } else {
       fail('mattermost_get_channels tool not found');
+    }
+  });
+
+  it('should get channels for the current user', async () => {
+    const tools = handler.getMcpTools();
+    const getMyChannelsTool = tools.find(tool => tool.name === 'mattermost_get_my_channels');
+    if (getMyChannelsTool) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const result = await getMyChannelsTool.handler({} as any);
+      expect(result.isError).toBe(false);
+      expect(result.content).toBeInstanceOf(Array);
+    } else {
+      fail('mattermost_get_my_channels tool not found');
     }
   });
 });

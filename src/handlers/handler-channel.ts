@@ -35,6 +35,13 @@ export class HandlerChannel extends AbstractHandler {
   }
 
   /**
+   * Get channels for the current user
+   */
+  private async getMyChannels() {
+    return this.client.getMyChannels();
+  }
+
+  /**
    * Get the MCP tools provided by this handler
    */
   getMcpTools() {
@@ -86,6 +93,14 @@ export class HandlerChannel extends AbstractHandler {
             return this.getChannels({ name: name.split(',').map(v => v.trim()) });
           }
           throw new Error('Please provide channel ID or channel name');
+        },
+      }),
+      this.createMcpTool({
+        name: 'mattermost_get_my_channels',
+        description: 'Get channels that the current user is a member of',
+        parameter: {},
+        handler: async () => {
+          return this.getMyChannels();
         },
       }),
     ];

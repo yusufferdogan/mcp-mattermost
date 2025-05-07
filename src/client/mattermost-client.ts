@@ -224,6 +224,17 @@ export class MattermostClient {
     return this.convertPostList(await this.client.getPinnedPosts(channelId));
   }
 
+  /**
+   * Get channels for the current user
+   */
+  async getMyChannels() {
+    if (!this.teamId) {
+      throw new Error('Team ID not set');
+    }
+    const channels = await this.client.getMyChannels(this.teamId);
+    return channels.map(this.convertChannel);
+  }
+
   private convertPost(post: Post) {
     return {
       ...post,
