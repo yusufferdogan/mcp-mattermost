@@ -14,7 +14,7 @@ async function main() {
     const config = loadConfig();
     const server = new McpServer({
       name: 'mcp-mattermost',
-      version: '0.0.2',
+      version: '0.0.3',
     });
 
     const tools = await getMattermostMcpTools(config);
