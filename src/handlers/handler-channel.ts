@@ -40,7 +40,7 @@ export class HandlerChannel extends AbstractHandler {
   getMcpTools() {
     return [
       this.createMcpTool({
-        name: 'search_channels',
+        name: 'mattermost_search_channels',
         description: 'Search channels by term',
         parameter: {
           term: z.string().describe('Search term'),
@@ -60,7 +60,7 @@ export class HandlerChannel extends AbstractHandler {
         },
       }),
       this.createMcpTool({
-        name: 'get_channels',
+        name: 'mattermost_get_channels',
         description: 'Get channels by channel ID or name',
         parameter: {
           channelId: z

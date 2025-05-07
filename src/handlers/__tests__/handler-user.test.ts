@@ -24,40 +24,40 @@ describe('HandlerUser', () => {
 
   it('should get users by user ID', async () => {
     const tools = handler.getMcpTools();
-    const getUsersTool = tools.find(tool => tool.name === 'get_users');
+    const getUsersTool = tools.find(tool => tool.name === 'mattermost_get_users');
     if (getUsersTool) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const result = await getUsersTool.handler({ userId: 'test-user-id' } as any);
       expect(result.isError).toBe(false);
       expect(result.content).toBeInstanceOf(Array);
     } else {
-      fail('get_users tool not found');
+      fail('mattermost_get_users tool not found');
     }
   });
 
   it('should get users by username', async () => {
     const tools = handler.getMcpTools();
-    const getUsersTool = tools.find(tool => tool.name === 'get_users');
+    const getUsersTool = tools.find(tool => tool.name === 'mattermost_get_users');
     if (getUsersTool) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const result = await getUsersTool.handler({ username: 'test-user' } as any);
       expect(result.isError).toBe(false);
       expect(result.content).toBeInstanceOf(Array);
     } else {
-      fail('get_users tool not found');
+      fail('mattermost_get_users tool not found');
     }
   });
 
   it('should search users', async () => {
     const tools = handler.getMcpTools();
-    const searchUsersTool = tools.find(tool => tool.name === 'search_users');
+    const searchUsersTool = tools.find(tool => tool.name === 'mattermost_search_users');
     if (searchUsersTool) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const result = await searchUsersTool.handler({ term: 'test' } as any);
       expect(result.isError).toBe(false);
       expect(result.content).toBeInstanceOf(Array);
     } else {
-      fail('search_users tool not found');
+      fail('mattermost_search_users tool not found');
     }
   });
 });

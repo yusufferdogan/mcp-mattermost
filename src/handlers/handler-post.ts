@@ -92,7 +92,7 @@ export class HandlerPost extends AbstractHandler {
   getMcpTools() {
     return [
       this.createMcpTool({
-        name: 'search_posts',
+        name: 'mattermost_search_posts',
         description:
           'Search posts by term with support for advanced search modifiers. Without any modifiers, performs a general search across all accessible content. Supported modifiers include:\n\n- `from:username` - Find posts from specific users\n- `in:channel` - Find posts in specific channels (by name or ID)\n- `before:YYYY-MM-DD` - Find posts before a date\n- `after:YYYY-MM-DD` - Find posts after a date\n- `on:YYYY-MM-DD` - Find posts on a specific date\n- `-term` - Exclude posts containing the term\n- `"exact phrase"` - Search for exact phrases using quotes\n- `term*` - Wildcard search (asterisk at end only)\n- `#hashtag` - Search for hashtags\n\nModifiers can be combined. Example: `meeting in:town-square from:john after:2023-01-01`',
         parameter: {
@@ -117,7 +117,7 @@ export class HandlerPost extends AbstractHandler {
         },
       }),
       this.createMcpTool({
-        name: 'get_posts',
+        name: 'mattermost_get_posts',
         description: 'Get posts by post ID',
         parameter: {
           postId: z.string().describe('Post ID').describe('Comma splitted array of post ID'),
@@ -127,7 +127,7 @@ export class HandlerPost extends AbstractHandler {
         },
       }),
       this.createMcpTool({
-        name: 'get_posts_unread',
+        name: 'mattermost_get_posts_unread',
         description: 'Get unread posts in a channel for the current user',
         parameter: {
           channelId: z.string().describe('Channel ID to get unread posts from'),
@@ -137,7 +137,7 @@ export class HandlerPost extends AbstractHandler {
         },
       }),
       this.createMcpTool({
-        name: 'create_post',
+        name: 'mattermost_create_post',
         description: 'Create a new post in a channel',
         parameter: {
           channelId: z.string().describe('Channel ID'),
@@ -157,7 +157,7 @@ export class HandlerPost extends AbstractHandler {
         },
       }),
       this.createMcpTool({
-        name: 'get_posts_thread',
+        name: 'mattermost_get_posts_thread',
         description: 'Get all posts in a thread',
         parameter: {
           rootId: z.string().describe('Post ID of the thread parent'),
@@ -177,7 +177,7 @@ export class HandlerPost extends AbstractHandler {
         },
       }),
       this.createMcpTool({
-        name: 'pin_post',
+        name: 'mattermost_pin_post',
         description: 'Pin a post to a channel',
         parameter: { postId: z.string().describe('Post ID to pin') },
         handler: async ({ postId }: { postId: string }) => {
@@ -185,7 +185,7 @@ export class HandlerPost extends AbstractHandler {
         },
       }),
       this.createMcpTool({
-        name: 'unpin_post',
+        name: 'mattermost_unpin_post',
         description: 'Unpin a post from a channel',
         parameter: { postId: z.string().describe('Post ID to unpin') },
         handler: async ({ postId }: { postId: string }) => {
@@ -193,7 +193,7 @@ export class HandlerPost extends AbstractHandler {
         },
       }),
       this.createMcpTool({
-        name: 'get_pinned_posts',
+        name: 'mattermost_get_pinned_posts',
         description: 'Get all pinned posts in a channel',
         parameter: { channelId: z.string().describe('Channel ID to get pinned posts from') },
         handler: async ({ channelId }: { channelId: string }) => {
