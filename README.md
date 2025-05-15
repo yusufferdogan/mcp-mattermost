@@ -15,9 +15,9 @@ To run this tool, you need to set the following environment variables:
       "@dakatan/mcp-mattermost"
     ],
     "env": {
-      "MCP_MATTERMOST_URL": "https://mattermost.x.tech",
+      "MCP_MATTERMOST_URL": "https://mattermost.x.y",
       "MCP_MATTERMOST_TOKEN": "",
-      "MCP_MATTERMOST_TEAM_ID": "" // Example: 77hiwenc5bd9xfcqoy7cxkgxsy
+      "MCP_MATTERMOST_TEAM_ID": "",
     }
   },
   ...
