@@ -15,9 +15,9 @@ To run this tool, you need to set the following environment variables:
       "@dakatan/mcp-mattermost"
     ],
     "env": {
-      "MCP_MATTERMOST_URL": "https://mattermost.x.tech",
+      "MCP_MATTERMOST_URL": "https://mattermost.x.y",
       "MCP_MATTERMOST_TOKEN": "",
-      "MCP_MATTERMOST_TEAM_ID": "" // Example: 77hiwenc5bd9xfcqoy7cxkgxsy
+      "MCP_MATTERMOST_TEAM_ID": "",
     }
   },
   ...
@@ -42,4 +42,3 @@ The MCP server provides the following tools:
 - Channel management: `mattermost_search_channels`, `mattermost_get_channels`, `mattermost_get_my_channels`
 - Post management: `mattermost_search_posts`, `mattermost_get_posts`, `mattermost_create_post`, `mattermost_get_posts_thread`, `mattermost_pin_post`, `mattermost_unpin_post`, `mattermost_get_pinned_posts`
 - Reaction management: `mattermost_add_reaction`, `mattermost_remove_reaction`, `mattermost_get_reactions`
-
