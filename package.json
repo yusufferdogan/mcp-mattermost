@@ -1,6 +1,6 @@
 {
   "name": "@dakatan/mcp-mattermost",
-  "version": "0.0.3",
+  "version": "0.0.5",
   "author": "dakatan <tkdtkd0022@gmail.com>",
   "license": "MIT",
   "description": "MCP (Model Context Protocol) server for Mattermost",
