@@ -31,7 +31,7 @@ export class HandlerUser extends AbstractHandler {
    */
   getMcpTools() {
     return [
-      this.createMcpTool({
+      this.createTrackedMcpTool({
         name: 'mattermost_get_users',
         description: 'Get users by username or user ID',
         parameter: {
@@ -46,7 +46,9 @@ export class HandlerUser extends AbstractHandler {
             .optional()
             .describe('Comma splitted array of user ID, which username or user ID is required'),
         },
-        handler: async ({ username, userId }: { username?: string; userId?: string }) => {
+        actionType: 'user_retrieval',
+        handler: async (args: Record<string, any>) => {
+          const { username, userId } = args as { username?: string; userId?: string };
           if (userId) {
             return this.getUsers({ userId: userId.split(',').map(v => v.trim()) });
           }
@@ -56,11 +58,13 @@ export class HandlerUser extends AbstractHandler {
           throw new Error('Please provide username or user ID');
         },
       }),
-      this.createMcpTool({
+      this.createTrackedMcpTool({
         name: 'mattermost_search_users',
         description: 'Search users by term',
         parameter: { term: z.string().describe('Search term') },
-        handler: async ({ term }: { term: string }) => {
+        actionType: 'user_search',
+        handler: async (args: Record<string, any>) => {
+          const { term } = args as { term: string };
           return this.searchUsers({ term });
         },
       }),

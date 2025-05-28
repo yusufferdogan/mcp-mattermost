@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { AbstractHandler } from './handler';
+import { AbstractHandler, UserIdentity } from './handler';
 
 /**
  * Handler for post-related MCP tools
@@ -91,7 +91,7 @@ export class HandlerPost extends AbstractHandler {
    */
   getMcpTools() {
     return [
-      this.createMcpTool({
+      this.createTrackedMcpTool({
         name: 'mattermost_search_posts',
         description:
           'Search posts by term with support for advanced search modifiers. Without any modifiers, performs a general search across all accessible content. Supported modifiers include:\n\n- `from:username` - Find posts from specific users\n- `in:channel` - Find posts in specific channels (by name or ID)\n- `before:YYYY-MM-DD` - Find posts before a date\n- `after:YYYY-MM-DD` - Find posts after a date\n- `on:YYYY-MM-DD` - Find posts on a specific date\n- `-term` - Exclude posts containing the term\n- `"exact phrase"` - Search for exact phrases using quotes\n- `term*` - Wildcard search (asterisk at end only)\n- `#hashtag` - Search for hashtags\n\nModifiers can be combined. Example: `meeting in:town-square from:john after:2023-01-01`',
@@ -104,39 +104,41 @@ export class HandlerPost extends AbstractHandler {
           page: z.number().optional().describe('Page number'),
           perPage: z.number().optional().describe('Number of posts per page'),
         },
-        handler: async ({
-          terms,
-          page,
-          perPage,
-        }: {
-          terms: string;
-          page?: number;
-          perPage?: number;
-        }) => {
+        actionType: 'post_search',
+        handler: async (args: Record<string, any>) => {
+          const { terms, page, perPage } = args as {
+            terms: string;
+            page?: number;
+            perPage?: number;
+          };
           return this.searchPosts({ terms, page, perPage });
         },
       }),
-      this.createMcpTool({
+      this.createTrackedMcpTool({
         name: 'mattermost_get_posts',
         description: 'Get posts by post ID',
         parameter: {
           postId: z.string().describe('Post ID').describe('Comma splitted array of post ID'),
         },
-        handler: async ({ postId }: { postId: string }) => {
+        actionType: 'post_retrieval',
+        handler: async (args: Record<string, any>) => {
+          const { postId } = args as { postId: string };
           return this.getPosts({ postId: postId.split(',').map(v => v.trim()) });
         },
       }),
-      this.createMcpTool({
+      this.createTrackedMcpTool({
         name: 'mattermost_get_posts_unread',
         description: 'Get unread posts in a channel for the current user',
         parameter: {
           channelId: z.string().describe('Channel ID to get unread posts from'),
         },
-        handler: async ({ channelId }: { channelId: string }) => {
+        actionType: 'post_retrieval',
+        handler: async (args: Record<string, any>) => {
+          const { channelId } = args as { channelId: string };
           return this.getPostsUnread({ channelId });
         },
       }),
-      this.createMcpTool({
+      this.createTrackedMcpTool({
         name: 'mattermost_create_post',
         description: 'Create a new post in a channel',
         parameter: {
@@ -144,19 +146,17 @@ export class HandlerPost extends AbstractHandler {
           message: z.string().describe('Message content'),
           rootId: z.string().optional().describe('Post ID to reply to'),
         },
-        handler: async ({
-          channelId,
-          message,
-          rootId,
-        }: {
-          channelId: string;
-          message: string;
-          rootId?: string;
-        }) => {
+        actionType: 'post_creation',
+        handler: async (args: Record<string, any>) => {
+          const { channelId, message, rootId } = args as {
+            channelId: string;
+            message: string;
+            rootId?: string;
+          };
           return this.createPost({ channelId, message, rootId });
         },
       }),
-      this.createMcpTool({
+      this.createTrackedMcpTool({
         name: 'mattermost_get_posts_thread',
         description: 'Get all posts in a thread',
         parameter: {
@@ -164,39 +164,43 @@ export class HandlerPost extends AbstractHandler {
           perPage: z.number().optional().describe('Number of posts per page'),
           fromPost: z.string().optional().describe('Post ID to start from'),
         },
-        handler: async ({
-          rootId,
-          fromPost,
-          perPage,
-        }: {
-          rootId: string;
-          perPage?: number;
-          fromPost?: string;
-        }) => {
+        actionType: 'post_retrieval',
+        handler: async (args: Record<string, any>) => {
+          const { rootId, fromPost, perPage } = args as {
+            rootId: string;
+            perPage?: number;
+            fromPost?: string;
+          };
           return this.getPostsThread({ rootId, fromPost, perPage });
         },
       }),
-      this.createMcpTool({
+      this.createTrackedMcpTool({
         name: 'mattermost_pin_post',
         description: 'Pin a post to a channel',
         parameter: { postId: z.string().describe('Post ID to pin') },
-        handler: async ({ postId }: { postId: string }) => {
+        actionType: 'post_management',
+        handler: async (args: Record<string, any>) => {
+          const { postId } = args as { postId: string };
           return this.pinPost({ postId });
         },
       }),
-      this.createMcpTool({
+      this.createTrackedMcpTool({
         name: 'mattermost_unpin_post',
         description: 'Unpin a post from a channel',
         parameter: { postId: z.string().describe('Post ID to unpin') },
-        handler: async ({ postId }: { postId: string }) => {
+        actionType: 'post_management',
+        handler: async (args: Record<string, any>) => {
+          const { postId } = args as { postId: string };
           return this.unpinPost({ postId });
         },
       }),
-      this.createMcpTool({
+      this.createTrackedMcpTool({
         name: 'mattermost_get_pinned_posts',
         description: 'Get all pinned posts in a channel',
         parameter: { channelId: z.string().describe('Channel ID to get pinned posts from') },
-        handler: async ({ channelId }: { channelId: string }) => {
+        actionType: 'post_retrieval',
+        handler: async (args: Record<string, any>) => {
+          const { channelId } = args as { channelId: string };
           return this.getPinnedPosts({ channelId });
         },
       }),

@@ -32,7 +32,7 @@ export class HandlerReaction extends AbstractHandler {
    */
   getMcpTools() {
     return [
-      this.createMcpTool({
+      this.createTrackedMcpTool({
         name: 'mattermost_add_reaction',
         description: 'Add a reaction (emoji) to a post',
         parameter: {
@@ -41,11 +41,13 @@ export class HandlerReaction extends AbstractHandler {
             .string()
             .describe('Comma splitted of array of name of the emoji to use as reaction'),
         },
-        handler: async ({ postId, emojiName }: { postId: string; emojiName: string }) => {
+        actionType: 'reaction_management',
+        handler: async (args: Record<string, any>) => {
+          const { postId, emojiName } = args as { postId: string; emojiName: string };
           return this.addReaction({ postId, emojiName: emojiName.split(',').map(v => v.trim()) });
         },
       }),
-      this.createMcpTool({
+      this.createTrackedMcpTool({
         name: 'mattermost_remove_reaction',
         description: 'Remove a reaction (emoji) from a post',
         parameter: {
@@ -54,18 +56,22 @@ export class HandlerReaction extends AbstractHandler {
             .string()
             .describe('Comma splitted array of name of the emoji reaction to remove'),
         },
-        handler: async ({ postId, emojiName }: { postId: string; emojiName: string }) => {
+        actionType: 'reaction_management',
+        handler: async (args: Record<string, any>) => {
+          const { postId, emojiName } = args as { postId: string; emojiName: string };
           return this.removeReaction({
             postId,
             emojiName: emojiName.split(',').map(v => v.trim()),
           });
         },
       }),
-      this.createMcpTool({
+      this.createTrackedMcpTool({
         name: 'mattermost_get_reactions',
         description: 'Get all reactions for a post',
         parameter: { postId: z.string().describe('Post ID to get reactions for') },
-        handler: async ({ postId }: { postId: string }) => {
+        actionType: 'reaction_retrieval',
+        handler: async (args: Record<string, any>) => {
+          const { postId } = args as { postId: string };
           return this.getReactions({ postId });
         },
       }),

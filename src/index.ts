@@ -14,12 +14,26 @@ async function main() {
     const config = loadConfig();
     const server = new McpServer({
       name: 'mcp-mattermost',
-      version: '0.0.3',
+      version: '0.0.5',
     });
 
     const tools = await getMattermostMcpTools(config);
     tools.forEach(tool => {
-      server.tool(tool.name, tool.description, tool.parameter, tool.handler);
+      if (
+        typeof tool === 'object' &&
+        tool !== null &&
+        'name' in tool &&
+        'description' in tool &&
+        'parameter' in tool &&
+        'handler' in tool
+      ) {
+        server.tool(
+          tool.name as string,
+          tool.description as string,
+          tool.parameter as any,
+          tool.handler as any,
+        );
+      }
     });
 
     await server.connect(new StdioServerTransport());
