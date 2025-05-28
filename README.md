@@ -26,7 +26,68 @@ dakatan (tkdtkd0022@gmail.com)
 
 ## Setup
 
-### Basic Setup
+### Quick Start with Docker
+
+The fastest way to get started is using Docker with the provided `docker-compose.yml`:
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/dakatan/mcp-mattermost.git
+cd mcp-mattermost
+```
+
+2. Create environment file:
+
+```bash
+cp env.example .env
+# Edit .env with your configuration
+```
+
+3. Start the services:
+
+```bash
+docker-compose up -d
+```
+
+This will start both the MCP server and a Neo4j instance for action tracking.
+
+### Docker Deployment
+
+#### Building the Docker Image
+
+```bash
+docker build -t mcp-mattermost .
+```
+
+#### Running with Docker
+
+```bash
+docker run -d \
+  --name mcp-mattermost \
+  -e MATTERMOST_URL="https://your-mattermost-instance.com" \
+  -e MATTERMOST_TOKEN="your-personal-access-token" \
+  -e NEO4J_URI="bolt://neo4j:7687" \
+  -e NEO4J_USERNAME="neo4j" \
+  -e NEO4J_PASSWORD="your_password" \
+  mcp-mattermost
+```
+
+#### Environment Variables
+
+| Variable            | Required | Description                                |
+| ------------------- | -------- | ------------------------------------------ |
+| `MATTERMOST_URL`    | Yes      | Your Mattermost instance URL               |
+| `MATTERMOST_TOKEN`  | Yes      | Personal access token for Mattermost       |
+| `NEO4J_URI`         | No       | Neo4j connection URI (for action tracking) |
+| `NEO4J_USERNAME`    | No       | Neo4j username                             |
+| `NEO4J_PASSWORD`    | No       | Neo4j password                             |
+| `CURSOR_USER_ID`    | No       | User ID for Cursor integration             |
+| `CURSOR_USER_NAME`  | No       | User name for Cursor integration           |
+| `CURSOR_USER_EMAIL` | No       | User email for Cursor integration          |
+| `CURSOR_USER_TEAM`  | No       | Team name for Cursor integration           |
+
+### Local Development Setup
 
 1. Install dependencies:
 
@@ -71,6 +132,22 @@ npm start
 
 If you want to enable advanced action tracking and analytics:
 
+#### Using Docker (Recommended)
+
+The `docker-compose.yml` file includes a Neo4j service that's automatically configured:
+
+```bash
+docker-compose up neo4j -d
+```
+
+Neo4j will be available at:
+
+- Browser interface: http://localhost:7474
+- Bolt connection: bolt://localhost:7687
+- Default credentials: neo4j/password (change via NEO4J_PASSWORD env var)
+
+#### Manual Neo4j Installation
+
 1. Install Neo4j Desktop or use Neo4j AuraDB
 2. Create a new database
 3. Set the Neo4j environment variables as shown above
@@ -92,6 +169,21 @@ CREATE INDEX IF NOT EXISTS FOR (action:Action) ON (action.type);
 CREATE INDEX IF NOT EXISTS FOR (action:Action) ON (action.name);
 CREATE FULLTEXT INDEX actionContext IF NOT EXISTS FOR (a:Action) ON EACH [a.name, a.type];
 ```
+
+## Architecture
+
+### Lazy Initialization
+
+The MCP server uses lazy initialization to avoid connection failures during startup. The Mattermost client is only initialized when the first tool is invoked, allowing the server to start successfully even without immediate Mattermost connectivity.
+
+### Action Tracking
+
+When Neo4j is configured, the server automatically tracks:
+
+- **User Actions**: All MCP tool invocations with user context
+- **Action Relationships**: Links between different actions and services
+- **Usage Patterns**: Historical data for recommendations and insights
+- **Cross-Service Data**: Relationships between Mattermost and other MCP systems
 
 ## Tools
 
@@ -380,6 +472,28 @@ Add this to your `cursor_desktop_config.json`:
 }
 ```
 
+### Using with Docker
+
+If you're running the server in Docker, use this configuration:
+
+```json
+{
+  "mcpServers": {
+    "mattermost": {
+      "command": "docker",
+      "args": ["exec", "mcp-mattermost", "node", "build/index.js"],
+      "env": {
+        "CURSOR_USER_ID": "your_user_id",
+        "CURSOR_USER_NAME": "Your Name",
+        "CURSOR_USER_EMAIL": "your@email.com",
+        "CURSOR_USER_TEAM": "Your Team"
+      },
+      "includeAuth": true
+    }
+  }
+}
+```
+
 The `cursor-auth` header will be automatically populated with the current user's information when you configure `"includeAuth": true`.
 
 ## Sample Questions
@@ -439,6 +553,45 @@ npm run build
 npm run lint
 npm run lint:fix
 ```
+
+### Docker Development
+
+For development with Docker:
+
+```bash
+# Build development image
+docker build -t mcp-mattermost:dev .
+
+# Run with volume mounting for development
+docker run -it --rm \
+  -v $(pwd):/app \
+  -e MATTERMOST_URL="https://your-mattermost-instance.com" \
+  -e MATTERMOST_TOKEN="your-token" \
+  mcp-mattermost:dev npm run dev
+```
+
+## Troubleshooting
+
+### Connection Issues
+
+The server uses lazy initialization, so it will start successfully even if Mattermost is unavailable. Connection errors will only occur when tools are invoked.
+
+### Neo4j Connection
+
+If Neo4j action tracking fails to connect:
+
+1. Verify Neo4j is running (check `docker-compose logs neo4j`)
+2. Check environment variables are correctly set
+3. Ensure Neo4j credentials are correct
+4. The server will continue to work without action tracking
+
+### Docker Issues
+
+Common Docker problems:
+
+- **Build failures**: Ensure all dependencies are correctly specified in package.json
+- **Permission issues**: The container runs as non-root user `mcp` (uid 1001)
+- **Environment variables**: Use `docker-compose` or set env vars correctly
 
 ## Cross-MCP Integration
 
