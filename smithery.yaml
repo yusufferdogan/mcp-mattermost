@@ -1,0 +1,145 @@
+name: mcp-mattermost
+description: 'Mattermost MCP Server with Neo4j Action Tracking'
+version: '0.0.5'
+
+# Build configuration
+build:
+  dockerfile: Dockerfile
+  context: .
+  target: production
+
+# Environment variables configuration
+environment:
+  # Required Mattermost configuration
+  - name: MATTERMOST_URL
+    description: 'Your Mattermost instance URL'
+    required: true
+    example: 'https://your-mattermost-instance.com'
+
+  - name: MATTERMOST_TOKEN
+    description: 'Personal access token for Mattermost'
+    required: true
+    secret: true
+    example: 'your-personal-access-token'
+
+  # Optional Neo4j configuration for action tracking
+  - name: NEO4J_URI
+    description: 'Neo4j connection URI for action tracking'
+    required: false
+    default: 'bolt://localhost:7687'
+    example: 'bolt://neo4j:7687'
+
+  - name: NEO4J_USERNAME
+    description: 'Neo4j username'
+    required: false
+    default: 'neo4j'
+    example: 'neo4j'
+
+  - name: NEO4J_PASSWORD
+    description: 'Neo4j password'
+    required: false
+    secret: true
+    example: 'your_neo4j_password'
+
+  # Optional Cursor integration
+  - name: CURSOR_USER_ID
+    description: 'User ID for Cursor integration'
+    required: false
+    example: 'user123'
+
+  - name: CURSOR_USER_NAME
+    description: 'User name for Cursor integration'
+    required: false
+    example: 'John Doe'
+
+  - name: CURSOR_USER_EMAIL
+    description: 'User email for Cursor integration'
+    required: false
+    example: 'john@example.com'
+
+  - name: CURSOR_USER_TEAM
+    description: 'Team name for Cursor integration'
+    required: false
+    example: 'Engineering'
+
+  # Node environment
+  - name: NODE_ENV
+    description: 'Node.js environment'
+    required: false
+    default: 'production'
+
+# Port configuration
+ports:
+  - port: 3000
+    description: 'Health check and debugging port'
+    public: false
+
+# Health check configuration
+healthcheck:
+  command: 'node -e "console.log(''Health check passed'')"'
+  interval: 30s
+  timeout: 10s
+  start_period: 60s
+  retries: 3
+
+# Resource requirements
+resources:
+  memory: 512Mi
+  cpu: 200m
+
+# Scaling configuration
+scaling:
+  min_replicas: 1
+  max_replicas: 3
+  target_cpu: 70
+
+# Dependencies (for docker-compose style deployments)
+services:
+  neo4j:
+    image: neo4j:5.17-community
+    environment:
+      NEO4J_AUTH: 'neo4j/${NEO4J_PASSWORD:-password}'
+      NEO4J_PLUGINS: '["apoc"]'
+      NEO4J_dbms_security_procedures_unrestricted: 'apoc.*'
+      NEO4J_dbms_security_procedures_allowlist: 'apoc.*'
+    ports:
+      - '7474:7474'
+      - '7687:7687'
+    volumes:
+      - neo4j_data:/data
+      - neo4j_logs:/logs
+    restart: unless-stopped
+
+# Volume definitions
+volumes:
+  neo4j_data: {}
+  neo4j_logs: {}
+
+# Tags and metadata
+tags:
+  - mcp
+  - mattermost
+  - chat
+  - neo4j
+  - action-tracking
+  - model-context-protocol
+
+# Repository information
+repository:
+  url: 'https://github.com/dakatan/mcp-mattermost'
+  branch: 'main'
+
+# License
+license: 'MIT'
+
+# Documentation
+documentation:
+  readme: 'README.md'
+  examples:
+    - name: 'Basic Usage'
+      description: 'How to search posts and create messages'
+      file: 'examples/basic-usage.md'
+
+    - name: 'Action Tracking'
+      description: 'Using Neo4j for action analytics'
+      file: 'examples/action-tracking.md'
