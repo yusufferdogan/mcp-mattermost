@@ -14,7 +14,7 @@ export class ActionTracker {
   async connect() {
     try {
       await this.driver.verifyConnectivity();
-      console.log('Connected to Neo4j Action Tracker');
+      console.error('Connected to Neo4j Action Tracker');
 
       // Initialize schema constraints
       await this.initializeSchema();
@@ -72,7 +72,7 @@ export class ActionTracker {
         `);
       } catch (error) {
         // Fulltext index might already exist, ignore error
-        console.log('Fulltext index might already exist:', error);
+        console.error('Fulltext index might already exist:', error);
       }
     } finally {
       await session.close();

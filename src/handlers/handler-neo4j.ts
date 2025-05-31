@@ -8,11 +8,11 @@ import { NEO4J_ACTION_TOOLS } from '../utils/neo4j-tools';
  * Handler for Neo4j action tracking MCP tools
  */
 export class HandlerNeo4j extends AbstractHandler {
-  protected actionTracker: ActionTracker | null = null;
-
-  constructor(client: any) {
-    super(client);
-    this.initializeActionTracker();
+  constructor(client: any, actionTracker?: ActionTracker | null) {
+    super(client, actionTracker);
+    if (!this.actionTracker) {
+      this.initializeActionTracker();
+    }
   }
 
   private async initializeActionTracker() {

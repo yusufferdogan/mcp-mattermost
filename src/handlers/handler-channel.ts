@@ -21,6 +21,7 @@ export class HandlerChannel extends AbstractHandler {
 
   /**
    * Search channels by term
+   * Falls back to searching within user's accessible channels if global search fails due to permissions
    */
   private async searchChannels({
     term,
@@ -31,7 +32,37 @@ export class HandlerChannel extends AbstractHandler {
     page?: number;
     perPage?: number;
   }) {
-    return this.client.searchChannels({ term, page, perPage });
+    try {
+      // Try global search first
+      return this.client.searchChannels({ term, page, perPage });
+    } catch (error) {
+      // If global search fails due to permissions, search within user's channels
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      if (errorMessage.includes('appropriate permissions')) {
+        console.warn('Global channel search failed, falling back to user channels search');
+
+        const myChannels = await this.client.getMyChannels();
+        const searchTermLower = term.toLowerCase();
+
+        // Filter user's channels by the search term
+        const filteredChannels = myChannels.filter(
+          channel =>
+            channel.display_name?.toLowerCase().includes(searchTermLower) ||
+            channel.name?.toLowerCase().includes(searchTermLower) ||
+            channel.purpose?.toLowerCase().includes(searchTermLower) ||
+            channel.header?.toLowerCase().includes(searchTermLower),
+        );
+
+        // Apply pagination manually
+        const startIndex = page * perPage;
+        const endIndex = startIndex + perPage;
+
+        return filteredChannels.slice(startIndex, endIndex);
+      }
+
+      // Re-throw other errors
+      throw error;
+    }
   }
 
   /**
@@ -94,7 +125,9 @@ export class HandlerChannel extends AbstractHandler {
       this.createTrackedMcpTool({
         name: 'mattermost_get_my_channels',
         description: 'Get channels that the current user is a member of',
-        parameter: {},
+        parameter: {
+          random_string: z.string().describe('Dummy parameter for no-parameter tools').optional(),
+        },
         actionType: 'channel_retrieval',
         handler: async () => {
           return this.getMyChannels();

@@ -29,14 +29,14 @@ async function initializeActionTracker(): Promise<ActionTracker | null> {
     try {
       actionTracker = new ActionTracker(neo4jUri, neo4jUsername, neo4jPassword);
       await actionTracker.connect();
-      console.log('Neo4j Action Tracker initialized successfully');
+      console.error('Neo4j Action Tracker initialized successfully');
       return actionTracker;
     } catch (error) {
       console.warn('Failed to initialize Neo4j Action Tracker:', error);
       return null;
     }
   } else {
-    console.log('Neo4j configuration not found. Action tracking will be disabled.');
+    console.error('Neo4j configuration not found. Action tracking will be disabled.');
     return null;
   }
 }
@@ -59,7 +59,7 @@ async function initializeMattermostClient(config: MattermostConfig): Promise<voi
     try {
       mattermostClient = new MattermostClient(config);
       await mattermostClient.init();
-      console.log('Mattermost client initialized successfully');
+      console.error('Mattermost client initialized successfully');
     } catch (e) {
       mattermostClient = null;
       clientInitializationPromise = null;
@@ -117,7 +117,7 @@ function createLazyMcpTool(
       const handlerChannel = new HandlerChannel(client, tracker);
       const handlerPost = new HandlerPost(client, tracker);
       const handlerReaction = new HandlerReaction(client, tracker);
-      const handlerNeo4j = new HandlerNeo4j(client);
+      const handlerNeo4j = new HandlerNeo4j(client, tracker);
 
       // Get the actual tool and call its handler
       const actualTool = toolFactory({
@@ -150,7 +150,7 @@ export async function getMattermostMcpTools(config: MattermostConfig) {
   const handlerChannel = new HandlerChannel(dummyClient, tracker);
   const handlerPost = new HandlerPost(dummyClient, tracker);
   const handlerReaction = new HandlerReaction(dummyClient, tracker);
-  const handlerNeo4j = new HandlerNeo4j(dummyClient);
+  const handlerNeo4j = new HandlerNeo4j(dummyClient, tracker);
 
   // Get all tool definitions
   const userTools = handlerUser.getMcpTools();

@@ -10,6 +10,14 @@ import { getMattermostMcpTools } from './handlers';
  * Main entry point for the Mattermost MCP server
  */
 async function main() {
+  // Disable all console logging to prevent interference with JSON-RPC communication
+  const noop = () => {};
+  console.log = noop;
+  console.error = noop;
+  console.warn = noop;
+  console.info = noop;
+  console.debug = noop;
+
   try {
     const config = loadConfig();
     const server = new McpServer({
